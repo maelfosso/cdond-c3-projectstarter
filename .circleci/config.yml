@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  slack: circleci/slack@4.5.1
+
 commands:
   # destroy-environment:
   #   description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
@@ -106,6 +109,24 @@ jobs:
             cd backend
             npm i
             npm run test
+      - slack/notify:
+          event: fail
+          mentions: '@Mael FOSSO'
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section"
+                  "fields": [
+                    {
+                      "type": "plain_text",
+                      "text": "*scan-backend* job has failed"
+                      "emoji": true
+                    }
+                  ]
+                }
+              ]
+            }
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
@@ -326,6 +347,7 @@ workflows:
       - test-frontend:
           requires: [build-frontend]
       - test-backend:
+          context: udacity-cloud-nanodegree-guitou
           requires: [build-backend]
       # - scan-backend:
       #     requires: [build-backend]
