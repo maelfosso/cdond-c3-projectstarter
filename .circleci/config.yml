@@ -120,7 +120,7 @@ jobs:
                   "fields": [
                     {
                       "type": "plain_text",
-                      "text": "*scan-backend* job has failed",
+                      "text": "*test-backend* job has failed",
                       "emoji": true
                     }
                   ]
@@ -152,26 +152,44 @@ jobs:
           paths: [frontend/node_modules]
           key: frontend-build
 
-  # scan-backend:
-  #   docker:
-  #     # Docker image here
-  #     - image: circleci/node:13.8.0
-  #   steps:
-  #     # Checkout code from git
-  #     - checkout
-  #     # Restore from cache
-  #     - restore_cache:
-  #         keys: [backend-build]
-  #     # Your job code here
-  #     - run:
-  #         name: Back-end scan
-  #         command: |
-  #           cd backend
-  #           npm i
-  #           npm audit --audit-level=critical
-  #     - save_cache:
-  #         paths: [backend/node_modules]
-  #         key: backend-build
+  scan-backend:
+    docker:
+      # Docker image here
+      - image: circleci/node:13.8.0
+    steps:
+      # Checkout code from git
+      - checkout
+      # Restore from cache
+      - restore_cache:
+          keys: [backend-build]
+      # Your job code here
+      - run:
+          name: Back-end scan
+          command: |
+            cd backend
+            npm i
+            npm audit --audit-level=critical
+      - slack/notify:
+          event: fail
+          mentions: '@Mael FOSSO'
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "plain_text",
+                      "text": "*scan-backend* job has failed",
+                      "emoji": true
+                    }
+                  ]
+                }
+              ]
+            }
+      - save_cache:
+          paths: [backend/node_modules]
+          key: backend-build
 
   # deploy-infrastructure:
   #   docker:
@@ -349,8 +367,8 @@ workflows:
       - test-backend:
           context: udacity-cloud-nanodegree-guitou
           requires: [build-backend]
-      # - scan-backend:
-      #     requires: [build-backend]
+      - scan-backend:
+          requires: [build-backend]
       - scan-frontend:
           requires: [build-frontend]
       # - deploy-infrastructure:
