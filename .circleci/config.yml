@@ -168,7 +168,7 @@ jobs:
           command: |
             cd backend
             npm i
-            npm audit --audit-level=critical
+            npm audit fix --audit-level=critical
       - slack/notify:
           event: fail
           mentions: '@Mael FOSSO'
@@ -368,6 +368,7 @@ workflows:
           context: udacity-cloud-nanodegree-guitou
           requires: [build-backend]
       - scan-backend:
+          context: udacity-cloud-nanodegree-guitou
           requires: [build-backend]
       - scan-frontend:
           requires: [build-frontend]
