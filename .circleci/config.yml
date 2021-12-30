@@ -116,11 +116,11 @@ jobs:
             {
               "blocks": [
                 {
-                  "type": "section"
+                  "type": "section",
                   "fields": [
                     {
                       "type": "plain_text",
-                      "text": "*scan-backend* job has failed"
+                      "text": "*scan-backend* job has failed",
                       "emoji": true
                     }
                   ]
