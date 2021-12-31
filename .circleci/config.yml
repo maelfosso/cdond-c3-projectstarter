@@ -211,7 +211,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files/backend.yml \
-              --tags from=udacity project=cdond-c3-udapeople m=backend
+              --tags from=udacity project=cdond-c3-udapeople m=backend \
               --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
               # exit 1
@@ -220,7 +220,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files/frontend.yml \
-              --tags from=udacity project=cdond-c3-udapeople m=frontend
+              --tags from=udacity project=cdond-c3-udapeople m=frontend \
               --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
               # exit 1
