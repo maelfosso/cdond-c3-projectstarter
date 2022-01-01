@@ -234,7 +234,7 @@ jobs:
               --output text
             )
             echo "BACKEND PUBLIC IP : $BACKEND_PUBLIC_IP"
-            echo $BACKEND_PUBLIC_IP >> project/.circleci/ansible/inventory.txt
+            echo $BACKEND_PUBLIC_IP >> .circleci/ansible/inventory.txt
             # exit 1
       - persist_to_workspace:
           root: ~/
