@@ -246,7 +246,7 @@ jobs:
   configure-infrastructure:
     docker:
       # Docker image here that supports Ansible
-      - image: python:3.7-alpine3.11
+      - image: amazon/aws-cli # python:3.7-alpine3.11
     steps:
       # Checkout code from git
       - checkout
@@ -255,18 +255,20 @@ jobs:
           fingerprints: ["a5:16:1f:ca:ba:b5:41:8f:de:50:73:63:47:50:40:35"]
       # attach workspace
       - attach_workspace:
-          at: project/.circleci/ansible/inventory.txt
+          at: ~/ # project/.circleci/ansible/inventory.txt
       - run:
           name: Install dependencies
           command: |
             # Your code here
-            apk add --update ansible
+            # apk add --update ansible
+            yum install -y ansible
             #  exit 1
       - run:
           name: Configure server
           command: |
             # Your code here
             cd .circleci/ansible
+            cat inventory.txt
             ansible-playbook -i inventory.txt configure-server.yml
             # exit 1
       # Here's where you will add some code to rollback on failure  
