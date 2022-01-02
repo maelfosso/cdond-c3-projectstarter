@@ -253,7 +253,7 @@ jobs:
           name: Installing dependencies
           command: |
             echo "Installing dependencies"
-            apt -y update && apt install -y git tar gzip
+            sudo apt -y update && sudo apt install -y git tar gzip
       # Checkout code from git
       - checkout
       # Add ssh keys with fingerprint
