@@ -246,7 +246,8 @@ jobs:
   configure-infrastructure:
     docker:
       # Docker image here that supports Ansible
-      - image: amazon/aws-cli # python:3.7-alpine3.11
+      - image: amazon/aws-cli
+      - image: python:3.7-alpine3.11
     steps:
       - run:
           name: Installing dependencies
@@ -265,8 +266,9 @@ jobs:
           name: Install dependencies
           command: |
             # Your code here
-            # apk add --update ansible
-            yum install -y ansible
+            apk add --update ansible
+            # yum install -y ansible
+            
             #  exit 1
       - run:
           name: Configure server
