@@ -4,6 +4,7 @@
   hosts: web
   user: ubuntu
   gather_facts: false
+  become: yes
   vars:
     - ansible_python_interpreter: /usr/bin/python3
     - ansible_host_key_checking: false
@@ -24,8 +25,7 @@
       command: sleep 600
 
     - name: "install python for Ansible."
-      raw: apt -y update && apt install python3.9
-      become: yes
+      raw: sudo apt -y update && sudo apt install python3
 
   roles:
     # Your code here
