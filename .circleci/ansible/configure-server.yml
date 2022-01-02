@@ -24,7 +24,8 @@
       command: sleep 600
 
     - name: "install python for Ansible."
-      command: apt -y update && apt install python3.9
+      raw: apt -y update && apt install python3.9
+      become: yes
 
   roles:
     # Your code here
