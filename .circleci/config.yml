@@ -298,6 +298,9 @@ jobs:
             npm install
             npm run migrations > migrations_dump.txt
             # exit 1
+      - save_cache:
+          paths: [backend/node_modules]
+          key: backend-build
       - run:
           name: Send migration results to memstash
           command: |
@@ -333,7 +336,7 @@ jobs:
           name: Install Node, NPM
           command: |
             echo "Installing Node, NPM"
-            curl -sL https://rpm.nodesource.com/setup_12.x | sudo bash -
+            curl -sL https://rpm.nodesource.com/setup_12.x | bash -
             yum install -y nodejs
             node --version
             npm --version
