@@ -246,14 +246,13 @@ jobs:
   configure-infrastructure:
     docker:
       # Docker image here that supports Ansible
-      - image: amazon/aws-cli
       - image: circleci/python:3.6.2
+      - image: amazon/aws-cli
     steps:
       - run:
           name: Installing dependencies
           command: |
             echo "Installing dependencies"
-            # yum install -y git tar gzip
             apt -y update && apt install -y git tar gzip
       # Checkout code from git
       - checkout
@@ -267,9 +266,7 @@ jobs:
           name: Install dependencies
           command: |
             # Your code here
-            # apk add --update ansible
             pip install ansible
-            # yum install -y ansible
             
             #  exit 1
       - run:
@@ -281,7 +278,7 @@ jobs:
             ansible-playbook -i inventory.txt configure-server.yml
             # exit 1
       # Here's where you will add some code to rollback on failure  
-      - destroy-environment    
+      - destroy-environment
 
   # run-migrations:
   #   docker:
