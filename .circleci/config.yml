@@ -253,7 +253,6 @@ jobs:
           name: Installing dependencies
           command: |
             echo "Installing dependencies"
-            # sudo apt -y update && sudo apt install -y git tar gzip
             yum install -y epel-release python3 python3-pip python-pip git tar gzip
       # Checkout code from git
       - checkout
@@ -262,7 +261,7 @@ jobs:
           fingerprints: ["a5:16:1f:ca:ba:b5:41:8f:de:50:73:63:47:50:40:35"]
       # attach workspace
       - attach_workspace:
-          at: ~/ # project/.circleci/ansible/inventory.txt
+          at: ~/
       - run:
           name: Install dependencies
           command: |
@@ -315,23 +314,54 @@ jobs:
       # Docker image here that supports AWS CLI
       - image: amazon/aws-cli
     steps:
+      - run:
+          name: Installing dependencies for checkout
+          command: |
+            echo "Installing dependencies"
+            yum install -y epel-release git tar gzip gcc-c++ make
       # Checkout code from git
       - checkout
+      # attach workspace
+      - attach_workspace:
+          at: ~/
       - run:
-          name: Install dependencies
+          name: Install python
           command: |
-            # your code here
-            yum install -y tar gzip
+            echo "Installing Python"
+            yum install -y python3 python3-pip python-pip
+      - run:
+          name: Install Node, NPM
+          command: |
+            echo "Installing Node, NPM"
+            curl -sL https://rpm.nodesource.com/setup_12.x | sudo bash -
+            yum install -y nodejs
+            node --version
+            npm --version
       - run:
           name: Get backend url
           command: |
             # your code here
+            export BACKEND_IP=$(aws ec2 describe-instances --filters Name=tag:Name,Values=backend-8ce6f12 --query "Reservations[*].Instances[*].PublicIpAddress" --output text)
+            echo "BACKEND_IP = ${BACKEND_API}"
             export API_URL="http://${BACKEND_IP}:3030"
-            echo "${API_URL}"
+            echo "API_URL = ${API_URL}"
+            echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
+            cat frontend/.env
+      - restore_cache:
+          keys: [frontend-build]
       - run:
           name: Deploy frontend objects
           command: |
             # your code here
+            cd frontend
+            npm install
+            npm run build
+            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
+            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+      - save_cache:
+          paths: [frontend/node_modules]
+          key: frontend-build
+      - destroy-environment
 
       # Here's where you will add some code to rollback on failure      
                     
@@ -433,10 +463,10 @@ workflows:
           #     only: [test-feature-branch]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
-      # - run-migrations:
-      #     requires: [configure-infrastructure]
-      # - deploy-frontend:
-      #     requires: [run-migrations]
+      - run-migrations:
+          requires: [configure-infrastructure]
+      - deploy-frontend:
+          requires: [run-migrations]
       # - deploy-backend:
       #     requires: [run-migrations]
       # - smoke-test:
