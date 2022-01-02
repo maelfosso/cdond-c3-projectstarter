@@ -247,13 +247,14 @@ jobs:
     docker:
       # Docker image here that supports Ansible
       - image: amazon/aws-cli
-      - image: python:3.7-alpine3.11
+      - image: circleci/python:3.6.2
     steps:
       - run:
           name: Installing dependencies
           command: |
             echo "Installing dependencies"
-            yum install -y git tar gzip
+            # yum install -y git tar gzip
+            sudo apt -y update && apt install -y git tar gzip
       # Checkout code from git
       - checkout
       # Add ssh keys with fingerprint
@@ -266,7 +267,8 @@ jobs:
           name: Install dependencies
           command: |
             # Your code here
-            apk add --update ansible
+            # apk add --update ansible
+            pip install ansible
             # yum install -y ansible
             
             #  exit 1
