@@ -267,7 +267,7 @@ jobs:
           name: Install dependencies
           command: |
             # Your code here
-            pip install --user ansible
+            pip3 install ansible
             
             #  exit 1
       - run:
