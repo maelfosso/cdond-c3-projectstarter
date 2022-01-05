@@ -27,15 +27,17 @@ commands:
       - run:
           name: Revert migrations
           # Add when this will run
+          when: on_fail
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
             SUCCESS = 1
             if(( $SUCCESS==1 )); 
             then
-            #  cd ~/project/backend
-            #  npm install
-            #  Add revert code here. You can find this in the Getting Started section.
-              exit 1
+              cd ~/project/backend
+              npm install
+              #  Add revert code here. You can find this in the Getting Started section.
+              npm run migrations:revert
+              # exit 1
             fi
             
 jobs:
@@ -345,7 +347,7 @@ jobs:
           command: |
             # your code here
             export BACKEND_IP=$(aws ec2 describe-instances --filters Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7} --query "Reservations[*].Instances[*].PublicIpAddress" --output text)
-            echo "BACKEND_IP = ${BACKEND_API}"
+            echo "BACKEND_IP = ${BACKEND_IP}"
             export API_URL="http://${BACKEND_IP}:3030"
             echo "API_URL = ${API_URL}"
             echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
@@ -373,18 +375,56 @@ jobs:
       # Docker image here that supports Ansible
       - image: amazon/aws-cli
     steps:
-      # Checkout code from git
-      # Add ssh keys with fingerprint
-      # attach workspace
       - run:
-          name: Install dependencies
+          name: Installing dependencies
           command: |
-            # your code here
+            echo "Installing dependencies"
+            yum install -y epel-release python3 python3-pip python-pip git tar gzip
+      # Checkout code from git
+      - checkout
+      # Add ssh keys with fingerprint
+      - add_ssh_keys:
+          fingerprints: ["a5:16:1f:ca:ba:b5:41:8f:de:50:73:63:47:50:40:35"]
+      # attach workspace
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Install Ansible
+          command: |
+            # Your code here
+            pip3 install ansible
+            
+            #  exit 1
+      - run:
+          name: Install Node, NPM
+          command: |
+            echo "Installing Node, NPM"
+            curl -sL https://rpm.nodesource.com/setup_12.x | bash -
+            yum install -y nodejs
+            node --version
+            npm --version
+      - restore_cache:
+          keys: [backend-build]
       - run:
           name: Deploy backend
           command: |
             # your code here
+            cd backend
+            npm i
+            npm run build
+            cd ..
+            # Zip the directory
+            tar -C backend -czvf artifact.tar.gz .
+            cd .circleci/ansible
+            echo "Contents  of the inventory.txt file is -------"
+            cat inventory.txt
+            ansible-playbook -i inventory.txt deploy-backend.yml
+      - save_cache:
+          paths: [backend/node_modules]
+          key: backend-build
       # Here's where you will add some code to rollback on failure  
+      - revert-migrations
+      - destroy-environment
 
   # smoke-test:
   #   docker:
@@ -470,8 +510,8 @@ workflows:
           requires: [configure-infrastructure]
       - deploy-frontend:
           requires: [run-migrations]
-      # - deploy-backend:
-      #     requires: [run-migrations]
+      - deploy-backend:
+          requires: [run-migrations]
       # - smoke-test:
       #     requires: [deploy-backend, deploy-frontend]
       # - cloudfront-update:

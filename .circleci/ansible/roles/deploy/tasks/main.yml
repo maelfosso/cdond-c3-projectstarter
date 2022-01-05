@@ -1,0 +1,9 @@
+---
+- name: install packages
+  raw: npm install
+
+- name: stop pm2 if running
+  raw: pm2 stop default
+
+- name: start pm2
+  raw: pm2 start npm -- start
