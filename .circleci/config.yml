@@ -329,11 +329,11 @@ jobs:
       # attach workspace
       - attach_workspace:
           at: ~/
-      - run:
-          name: Install python
-          command: |
-            echo "Installing Python"
-            yum install -y python3 python3-pip python-pip
+      # - run:
+      #     name: Install python
+      #     command: |
+      #       echo "Installing Python"
+      #       yum install -y python3 python3-pip python-pip
       - run:
           name: Install Node, NPM
           command: |
