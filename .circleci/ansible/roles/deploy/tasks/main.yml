@@ -1,11 +1,11 @@
 ---
 - name: Copy the artifact
   template:
-    src: "backend"
+    src: "artifact.tar.gz"
     dest: "./"
 
 - name: Extract the artifact
-  raw: tar -xvf backend .
+  raw: tar -xvf artifact.tar.gz
 
 - name: install packages
   raw: npm install
