@@ -414,7 +414,12 @@ jobs:
             npm run build
             cd ..
             # Zip the directory
+            echo "Zip the directory"
+            ls -la
             tar -C backend -czvf artifact.tar.gz .
+            echo "After tar"
+            ls -l .
+            echo "END ZIP ..."
             cd .circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
