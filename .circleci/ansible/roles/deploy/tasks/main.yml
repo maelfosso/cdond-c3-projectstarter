@@ -15,6 +15,7 @@
   raw: npm install
 
 - name: stop pm2 if running
+  ignore_errors: yes
   raw: pm2 stop default
 
 - name: start pm2
