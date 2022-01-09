@@ -5,7 +5,11 @@
     dest: "./"
 
 - name: Extract the artifact
-  raw: tar -xf artifact.tar.gz
+  # raw: tar -xf artifact.tar.gz
+  unarchive:
+    src: artifact.tar.gz
+    dest: .
+    remote_src: yes
 
 - name: install packages
   raw: npm install
