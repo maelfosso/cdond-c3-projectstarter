@@ -1,6 +1,6 @@
 ---
 - name: Copy the artifact
-  template:
+  copy:
     src: "/root/project/artifact.tar.gz"
     dest: "./"
 
