@@ -1,6 +1,6 @@
 ---
 - name: "print environment variables"
-  raw: printenv
+  command: printenv
 
 - name: "update apt packages."
   become: yes

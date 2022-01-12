@@ -1,7 +1,7 @@
 ---
 
 - name: "print environment variables"
-  raw: printenv
+  command: printenv
 
 - name: Copy the artifact
   copy:
