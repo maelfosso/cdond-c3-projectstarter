@@ -452,7 +452,7 @@ jobs:
           name: Backend smoke test.
           command: |
             # your code here
-            export API_URL="http://${BACKEND_IP}:3030"
+            export API_URL="https://${BACKEND_IP}:3030"
             echo "API_URL=${API_URL}"
             if curl "${API_URL}/api/status" | grep "ok"
             then
@@ -474,7 +474,7 @@ jobs:
             fi
       # Here's where you will add some code to rollback on failure
       - revert-migrations
-      - destroy-environment
+      # - destroy-environment
 
   # cloudfront-update:
   #   docker:
