@@ -1,4 +1,8 @@
 ---
+
+- name: "print environment variables"
+  raw: printenv
+
 - name: Copy the artifact
   copy:
     src: "/root/project/artifact.tar.gz"
