@@ -467,7 +467,8 @@ jobs:
             # your code here
             export API_URL="http://${BACKEND_IP}:3030"
             echo "API_URL=${API_URL}"
-            curl "${API_URL}/api/status"
+            curl "${API_URL}/api/status" > curl_output.txt
+            cat curl_output.txt
             if curl "${API_URL}/api/status" | grep "ok"
             then
               exit 0
